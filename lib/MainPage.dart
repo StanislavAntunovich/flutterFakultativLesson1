@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterapp/messages_list_widgets.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -7,12 +8,31 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+  }
+
+  Widget _makeRow(String chatName, String lastMessage) {
+    return InkWell(
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (BuildContext context) {
+          return MessagesListWidget(chatName: chatName,);
+        }));
+      },
+      child: Container(
+        margin: EdgeInsets.all(9.0),
+        padding: EdgeInsets.all(9.0),
+        decoration: BoxDecoration(
+            color: Colors.white10,
+            border: Border.all(color: Colors.greenAccent)),
+        child: Column(
+          children: <Widget>[Text(chatName), Text(lastMessage)],
+        ),
+      ),
+    );
   }
 
   @override
@@ -27,65 +47,20 @@ class _MainPageState extends State<MainPage> {
       ),
       body: Center(
         child: ListView(
-
           padding: EdgeInsets.all(9),
           children: <Widget>[
-          InkWell(
-            child: Container(
-              margin: EdgeInsets.all(9.0),
-              padding: EdgeInsets.all(9.0),
-              decoration: BoxDecoration(color: Colors.white10,
-                  border: Border.all( color: Colors.greenAccent )),
-              child: Column (children: <Widget>[
-                Text ('Название чата'),
-                Text ("Последнее сообщение")
-              ],)
-              , ),
-          ),
-          InkWell(
-            splashColor: Colors.red,
-            child: Container(
-              margin: EdgeInsets.all(9.0),
-              padding: EdgeInsets.all(9.0),
-              decoration: BoxDecoration(color: Colors.white10,
-                  border: Border.all( color: Colors.greenAccent )),
-              child: Column (children: <Widget>[
-                Text ('Название чата'),
-                Text ("Последнее сообщение")
-              ],)
-              , ),
-          ),
-          Container(
-            margin: EdgeInsets.all(9.0),
-            padding: EdgeInsets.all(9.0),
-            decoration: BoxDecoration(color: Colors.white10,
-                border: Border.all( color: Colors.greenAccent )),
-            child: Column (children: <Widget>[
-              Text ('Название чата'),
-              Text ("Последнее сообщение")
-            ],)
-            , ),
-          Container(
-            margin: EdgeInsets.all(9.0),
-            padding: EdgeInsets.all(9.0),
-            decoration: BoxDecoration(color: Colors.white10,
-                border: Border.all( color: Colors.greenAccent )),
-            child: Column (children: <Widget>[
-              Text ('Название чата'),
-              Text ("Последнее сообщение")
-            ],)
-            , ),
-          Container(
-            margin: EdgeInsets.all(9.0),
-            padding: EdgeInsets.all(9.0),
-            decoration: BoxDecoration(color: Colors.white10,
-                border: Border.all( color: Colors.greenAccent )),
-            child: Column (children: <Widget>[
-              Text ('Название чата'),
-              Text ("Последнее сообщение")
-            ],)
-            , )
-          ],),
+            _makeRow('Название чата1', 'Последнее сообщение'),
+            _makeRow('Название чата2', 'Последнее сообщение'),
+            _makeRow('Название чата3', 'Последнее сообщение'),
+            _makeRow('Название чата4', 'Последнее сообщение'),
+            _makeRow('Название чата5', 'Последнее сообщение'),
+            _makeRow('Название чата6', 'Последнее сообщение'),
+            _makeRow('Название чата7', 'Последнее сообщение'),
+            _makeRow('Название чата8', 'Последнее сообщение'),
+            _makeRow('Название чата9', 'Последнее сообщение'),
+            _makeRow('Название чата10', 'Последнее сообщение'),
+          ],
+        ),
       ),
     );
   }
