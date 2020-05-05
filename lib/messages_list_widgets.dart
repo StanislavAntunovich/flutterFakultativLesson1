@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutterapp/data/message.dart';
 import 'package:intl/intl.dart';
 
@@ -26,7 +27,8 @@ List<Message> _makeTestMessagesList() {
         isOutgoing: false,
         creationTime: time.subtract(Duration(hours: 21))),
     new Message(
-        message: "hello4 bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla 17",
+        message:
+            "hello4 bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla 17",
         author: "me",
         isOutgoing: true,
         creationTime: time.subtract(Duration(hours: 20))),
@@ -78,19 +80,44 @@ class MessagesListWidget extends StatefulWidget {
 }
 
 class _MessagesListState extends State<MessagesListWidget> {
+  TextEditingController _textController = TextEditingController();
+  ScrollController _scrollController = ScrollController(); //TODO scroll to last message
+
+  List<Message> messagesList = [];
+
+  @override
+  void initState() {
+    messagesList = _makeTestMessagesList();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _textController.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    var messagesList = _makeTestMessagesList();
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          widget.chatName,
-          style: TextStyle(color: Colors.black38),
+        appBar: AppBar(
+          title: Text(
+            widget.chatName,
+            style: TextStyle(color: Colors.black38),
+          ),
+          backgroundColor: Colors.greenAccent,
         ),
-        backgroundColor: Colors.greenAccent,
-      ),
-      body: ListView.builder(
+        body: Column(
+          children: <Widget>[_makeMessagesList(), _makeMessageInput()],
+        ));
+  }
+
+  Widget _makeMessagesList() {
+    return Flexible(
+      child: ListView.builder(
+          controller: _scrollController,
           itemCount: messagesList.length,
           padding: EdgeInsets.only(left: 8, right: 8),
           itemBuilder: (BuildContext context, int index) {
@@ -98,6 +125,39 @@ class _MessagesListState extends State<MessagesListWidget> {
             return _makeBubble(message);
           }),
     );
+  }
+
+  Widget _makeMessageInput() {
+    var textForm = TextFormField(
+      decoration: InputDecoration(labelText: "сообщение"),
+      controller: _textController,
+    );
+    var sendBtn = IconButton(icon: Icon(Icons.send), onPressed: _sendMessage);
+    return Container(
+      decoration: new BoxDecoration(
+          border: new Border(top: new BorderSide(width: 0.5)),
+          color: Colors.white),
+      padding: EdgeInsets.symmetric(horizontal: 8.0),
+      child: Row(
+        children: <Widget>[
+          Flexible(
+            child: textForm,
+          ),
+          sendBtn
+        ],
+      ),
+    );
+  }
+
+  void _sendMessage() {
+    var text = _textController.text;
+    _textController.text = "";
+    messagesList.add(new Message(
+        message: text,
+        author: "me",
+        isOutgoing: true,
+        creationTime: DateTime.now()));
+    setState(() {});
   }
 
   Widget _makeBubble(Message message) {
@@ -134,7 +194,9 @@ class _MessageBubble extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.all(6),
       child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: _calculateMaxWidth(context), minWidth: _calculateMinWidth(context)),
+        constraints: BoxConstraints(
+            maxWidth: _calculateMaxWidth(context),
+            minWidth: _calculateMinWidth(context)),
         child: messagesColumn,
       ),
     );
@@ -143,13 +205,15 @@ class _MessageBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var color = _message.isOutgoing ? Colors.green : Colors.blue;
-    var alignment = _message.isOutgoing ? Alignment.centerRight : Alignment.centerLeft;
+    var alignment =
+        _message.isOutgoing ? Alignment.centerRight : Alignment.centerLeft;
     return Align(
-          alignment: alignment,
-          child: CustomPaint(
-            painter: _BubblePainter(color: color, isOutgoing: _message.isOutgoing),
-            child: _makeMessageContent(context),
-          ));
+        alignment: alignment,
+        child: CustomPaint(
+          painter:
+              _BubblePainter(color: color, isOutgoing: _message.isOutgoing),
+          child: _makeMessageContent(context),
+        ));
   }
 }
 
